@@ -26,7 +26,8 @@ from oslo_service import _options
 
 LOG = logging.getLogger(__name__)
 
-DEFAULT_INTERVAL = 60.0
+#DEFAULT_INTERVAL = 60.0
+DEFAULT_INTERVAL = 10.0
 
 
 def list_opts():
@@ -192,8 +193,14 @@ class PeriodicTasks(object):
 
     def run_periodic_tasks(self, context, raise_on_error=False):
         """Tasks to be run at a periodic interval."""
+        print("bbbbbbbbbbbbbbbbbbegin run_periodic_tasks")
         idle_for = DEFAULT_INTERVAL
         for task_name, task in self._periodic_tasks:
+
+            print("ttttttttttttask_name: " + repr(task_name))
+            if task_name != "_expire_reservations":
+                continue
+
             if (task._periodic_external_ok and not
                self.conf.run_external_periodic_tasks):
                 continue
@@ -225,4 +232,5 @@ class PeriodicTasks(object):
                               {"full_task_name": full_task_name})
             time.sleep(0)
 
+        print("eeeeeeeeeeeeeeeeeeeeend run_periodic_tasks")
         return idle_for
